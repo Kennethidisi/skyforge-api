@@ -74,7 +74,7 @@ jobs:
         run: zip deploy.zip Dockerrun.aws.json
 
       - name: Deploy to Elastic Beanstalk
-        uses: aws-actions/aws-elastic-beanstalk-deploy@v1.0.0
+        uses: aws-actions/aws-elasticbeanstalk-deploy@v1.0.0
         with:
           application_name: skyforge-api
           environment_name: skyforge-api-prod
