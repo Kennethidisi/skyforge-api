@@ -53,3 +53,31 @@ jobs:
         run: |
           docker push ${{ vars.DOCKERHUB_USERNAME }}/skyforge-api:latest
           docker push ${{ vars.DOCKERHUB_USERNAME }}/skyforge-api:${{github.sha}}
+
+  deploy-to-aws:
+    runs-on: ubuntu-latest
+    needs: build-and-push-image
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v6
+      
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Create deployment bundle
+        run: zip deploy.zip Dockerrun.aws.json
+
+      - name: Deploy to Elastic Beanstalk
+        uses: aws-actions/aws-elastic-beanstalk-deploy@v1
+        with:
+          application_name: skyforge-api
+          environment_name: skyforge-api-prod
+          version_label: ${{ github.sha }}
+          region: ${{ secrets.AWS_REGION }}
+          deployment_package: deploy.zip
