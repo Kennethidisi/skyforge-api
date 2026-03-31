@@ -201,4 +201,4 @@ From writing code → to deploying it in the cloud automatically.
 
 ## ⭐ If you found this useful
 
-Give it a star and feel free to fork 🚀
+Give it a star, and feel free to fork 🚀
